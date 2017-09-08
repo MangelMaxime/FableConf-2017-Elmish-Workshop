@@ -38,11 +38,13 @@ app
 let staticOptions = createEmpty<express.``serve-static``.Options>
 staticOptions.index <- Some !^"index.html"
 
-let publicPath = Node.Exports.Path.join(Node.Globals.__dirname, "../../public")
-let clientPath = Node.Exports.Path.join(Node.Globals.__dirname, "../../output/client")
 
-Browser.console.log clientPath
-Browser.console.log Node.Globals.__dirname
+let resolve path = Node.Exports.Path.join(Node.Globals.__dirname, path)
+let combine path1 path2 = Node.Exports.Path.join(path1, path2)
+
+let output = resolve ".."
+let publicPath = combine output "../public"
+let clientPath = combine output "client"
 
 // Register path to the public files
 app.``use``(express.``static``.Invoke(publicPath, staticOptions))
@@ -56,6 +58,20 @@ let port =
     match unbox Node.Globals.``process``.env?PORT with
     | Some x -> x
     | None -> 8080
+
+#if DEBUG
+let reload = importDefault<obj> "reload"
+let reloadServer = reload$(app)
+
+let watch = importDefault<obj> "watch"
+
+let watchOptions = createEmpty<Watch.Options>
+watchOptions.interval <- Some 1.
+
+Watch.Exports.watchTree(output, watchOptions, fun f cur prev ->
+    reloadServer?reload$() |> ignore
+)
+#endif
 
 app.listen(port, !!(fun _ ->
     printfn "Server started: http://localhost:%i" port
