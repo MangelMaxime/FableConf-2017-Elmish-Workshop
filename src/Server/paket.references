@@ -3,3 +3,4 @@ Fable.Core
 dotnet-fable
 Fable.PowerPack
 Fable.Import.Express
+Fable.Import.Node

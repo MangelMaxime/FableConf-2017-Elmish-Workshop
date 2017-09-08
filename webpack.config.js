@@ -1,6 +1,8 @@
 var path = require("path");
 var webpack = require("webpack");
 var fableUtils = require("fable-utils");
+var nodeExternals = require('webpack-node-externals');
+var nodemonPlugin = require('nodemon-webpack-plugin');
 
 function resolve(filePath) {
     return path.join(__dirname, filePath)
@@ -69,11 +71,19 @@ var clientConfig = Object.assign({
 
 var serverConfig = Object.assign({
     target: "node",
+    node: {
+        __filename: false,
+        __dirname: false
+    },
+    externals: [nodeExternals()],
     entry: resolve("src/Server/Server.fsproj"),
     output: {
         path: resolve("output/server"),
         filename: "server.js"
-    }
+    },
+    plugins: [
+        new nodemonPlugin()
+    ]
 }, basicConfig);
 
 module.exports = [clientConfig, serverConfig]

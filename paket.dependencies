@@ -12,6 +12,7 @@ nuget Fulma prerelease
 nuget Fulma.Extensions prerelease
 nuget Fable.PowerPack
 nuget Fable.Import.Express
+nuget Fable.Import.Node
 
 clitool dotnet-fable
 

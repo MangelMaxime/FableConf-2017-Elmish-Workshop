@@ -1,0 +1,7 @@
+{
+    "verbose": true,
+    "watch": [
+        "output/server/server.js"
+    ],
+    "ext": "js json"
+}
