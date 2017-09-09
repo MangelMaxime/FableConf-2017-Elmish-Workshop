@@ -17,6 +17,14 @@ module Express =
         |> ignore
         app
 
+    let post (route: string) (handler: SimpleHandler) (app: express.Express) =
+        app.post(U2.Case1 route, (fun req res _ ->
+            handler req res
+            |> box
+        ))
+        |> ignore
+        app
+
     type UseBuilder =
         | UseBuilder of express.Express with
 
@@ -38,17 +46,7 @@ module Response =
 
 let app = express.Invoke()
 
-app
-|> Express.get
-        "/status"
-        (fun req res ->
-            Response.send "Server is running !" res
-        )
-// |> Express.get
-//         ""
-|> ignore
-
-
+// Configure express application
 let staticOptions = createEmpty<express.``serve-static``.Options>
 staticOptions.index <- Some !^"index.html"
 
@@ -60,18 +58,46 @@ let output = resolve ".."
 let publicPath = combine output "../public"
 let clientPath = combine output "client"
 
-// Register the static directories
 app
+// Register the static directories
 |> Express.``use`` (express.``static``.Invoke(publicPath, staticOptions))
 |> Express.``use`` (express.``static``.Invoke(clientPath, staticOptions))
+// Register logger
+|> Express.``use`` (morgan.Exports.Morgan.Invoke(morgan.Dev))
+|> Express.``use`` (bodyParser.Globals.json())
 |> ignore
 
-// Get PORT environment variable or use default
+// Routing
+
+app
+|> Express.get
+        "/status"
+        (fun req res ->
+            Response.send "Server is running !" res
+        )
+|> Express.post
+        "/test"
+        (fun req res ->
+            req.body?test |> printfn "%A"
+            res.``end``()
+        )
+// |> Express.get
+//         ""
+|> ignore
+
+
+// Start the server
 let port =
     match unbox Node.Globals.``process``.env?PORT with
     | Some x -> x
     | None -> 8080
 
+app.listen(port, !!(fun _ ->
+    printfn "Server started: http://localhost:%i" port
+))
+|> ignore
+
+// Live reload when in dev mode
 #if DEBUG
 let reload = importDefault<obj> "reload"
 let reloadServer = reload$(app)
@@ -85,8 +111,3 @@ Watch.Exports.watchTree(output, watchOptions, fun f cur prev ->
     reloadServer?reload$() |> ignore
 )
 #endif
-
-app.listen(port, !!(fun _ ->
-    printfn "Server started: http://localhost:%i" port
-))
-|> ignore
