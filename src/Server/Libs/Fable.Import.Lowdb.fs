@@ -117,6 +117,9 @@ module Lowdb =
     and [<Import("*", "lowdb/adapters/FileAsync")>] FileAsyncAdapter(source: string, ?option: AdapterOptions) =
         inherit IAdapter(source, ?option = option)
 
+    and [<Import("*", "lowdb/adapters/FileSync")>] FileSyncAdapter(source: string, ?option: AdapterOptions) =
+        inherit IAdapter(source, ?option = option)
+
     // type Adapter =
     //      static member FileAsync(source: string, ?options: AdapterOptions) :FileAsyncAdapter = jsNative
 
