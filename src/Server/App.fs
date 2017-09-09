@@ -17,6 +17,20 @@ module Express =
         |> ignore
         app
 
+    type UseBuilder =
+        | UseBuilder of express.Express with
+
+            static member (^.) (UseBuilder app, (handler) : express.RequestHandler) =
+                app.``use``(handler) |> ignore
+                app
+
+            static member (^.) (UseBuilder app, (path, handler) : string * express.RequestHandler)=
+                app.``use``(path, handler) |> ignore
+                app
+
+    let inline ``use`` args (app: express.Express) = ((UseBuilder app) ^. args)
+
+
 module Response =
 
     let send body (res: express.Response) =
@@ -46,11 +60,10 @@ let output = resolve ".."
 let publicPath = combine output "../public"
 let clientPath = combine output "client"
 
-// Register path to the public files
-app.``use``(express.``static``.Invoke(publicPath, staticOptions))
-|> ignore
-// Register path to the client files
-app.``use``(express.``static``.Invoke(clientPath, staticOptions))
+// Register the static directories
+app
+|> Express.``use`` (express.``static``.Invoke(publicPath, staticOptions))
+|> Express.``use`` (express.``static``.Invoke(clientPath, staticOptions))
 |> ignore
 
 // Get PORT environment variable or use default

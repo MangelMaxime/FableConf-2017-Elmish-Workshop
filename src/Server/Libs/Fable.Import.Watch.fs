@@ -35,12 +35,8 @@ module Watch =
     [<Import("*", "watch")>]
     type Exports =
         class end
-        static member watchTree(root : string, cb : FileOrFiles -> Fs.Stats -> Fs.Stats -> unit) : unit = jsNative
-        static member watchTree(root : string, options : Options, cb : FileOrFiles -> Fs.Stats -> Fs.Stats -> unit) : unit = jsNative
-
-
-// export function watchTree(root: string, callback: (f: FileOrFiles, curr: fs.Stats, prev: fs.Stats) => void): void;
-// export function watchTree(root: string, options: Options, callback: (f: FileOrFiles, curr: fs.Stats, prev: fs.Stats) => void): void;
-// export function unwatchTree(root: string): void;
-// export function createMonitor(root: string, callback: (monitor: Monitor) => void): void;
-// export function createMonitor(root: string, options: Options, callback: (monitor: Monitor) => void): void;
+        static member watchTree(root: string, cb: FileOrFiles -> Fs.Stats -> Fs.Stats -> unit): unit = jsNative
+        static member watchTree(root: string, options: Options, cb: FileOrFiles -> Fs.Stats -> Fs.Stats -> unit): unit = jsNative
+        static member unwatchTree(root: string) : unit = jsNative
+        static member createMonitor(root: string, cb: Monitor -> unit): unit = jsNative
+        static member createMonitor(root: string, options: Options, cb: Monitor -> unit): unit = jsNative
