@@ -12,6 +12,7 @@
     "dependencies": {
         "babel-runtime": "^6.26.0",
         "body-parser": "^1.18.0",
+        "lowdb": "^1.0.0",
         "morgan": "^1.8.2",
         "react": "^15.6.1",
         "react-dom": "^15.6.1",

@@ -85,29 +85,56 @@ app
 //         ""
 |> ignore
 
-
 // Start the server
 let port =
     match unbox Node.Globals.``process``.env?PORT with
     | Some x -> x
     | None -> 8080
 
-app.listen(port, !!(fun _ ->
-    printfn "Server started: http://localhost:%i" port
-))
-|> ignore
-
 // Live reload when in dev mode
-#if DEBUG
-let reload = importDefault<obj> "reload"
-let reloadServer = reload$(app)
+// #if DEBUG
+// let reload = importDefault<obj> "reload"
+// let reloadServer = reload$(app)
 
-let watch = importDefault<obj> "watch"
+// let watch = importDefault<obj> "watch"
 
-let watchOptions = createEmpty<Watch.Options>
-watchOptions.interval <- Some 1.
+// let watchOptions = createEmpty<Watch.Options>
+// watchOptions.interval <- Some 1.
 
-Watch.Exports.watchTree(output, watchOptions, fun f cur prev ->
-    reloadServer?reload$() |> ignore
-)
-#endif
+// Watch.Exports.watchTree(output, watchOptions, fun f cur prev ->
+//     reloadServer?reload$() |> ignore
+// )
+// #endif
+
+[<Pojo>]
+type Users =
+    { Firstname: string
+      Surname: string
+      Email: string
+      Password: string }
+
+[<Pojo>]
+type Database =
+    { Users: Users list }
+
+let dbFile = resolve("db.json")
+let adapter = Lowdb.FileAsyncAdapter(dbFile)
+// let db =
+Lowdb.Lowdb(adapter)
+    ?``then``(fun (db: Lowdb.Lowdb) ->
+        db.defaults(
+            { Users =
+                [ { Firstname = "Maxime"
+                    Surname = "Mangel"
+                    Email = "mangel.maxime@fableconf.com"
+                    Password = "maxime"
+                }]
+            }
+        ).write()
+    )?``then``(fun _ ->
+        app.listen(port, !!(fun _ ->
+            printfn "Server started: http://localhost:%i" port
+        ))
+        |> ignore
+    )
+|> ignore
