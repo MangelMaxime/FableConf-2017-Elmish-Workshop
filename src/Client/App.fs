@@ -6,64 +6,65 @@ open Elmish.Browser.UrlParser
 open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import
-open Fable.Import.Browser
 open Types
-open App.State
-
-importAll "./sass/main.sass"
-
+open State
+open Fulma.Layout
+open Fulma.Components
+open Global
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
-let menuItem label page currentPage=
-    li
-      [ ]
-      [ a
-          [ classList [ "is-active", page = currentPage ]
-            Href (toHash page) ]
-          [ str label ] ]
+importAll "./sass/main.sass"
 
-let menu currentPage =
-    aside
-      [ ClassName "menu" ]
-      [ p
-          [ ClassName "menu-label" ]
-          [ str "General" ]
-        ul
-          [ ClassName "menu-list" ]
-          [ menuItem "Home" Page.Home currentPage
-            menuItem "Counter sample" Page.Counter currentPage
-            menuItem "Counter list sample" Page.CounterList currentPage
-            menuItem "About" Page.About currentPage ] ]
+let genNavbarItem txt refPage currentPage =
+    Navbar.item_a [ if refPage = currentPage then
+                        yield Navbar.Item.isActive
+                    yield Navbar.Item.props [ Href (toHash refPage) ] ]
+        [ str txt ]
+
+let navbarAdminLink currentPage =
+    let isActive =
+        match currentPage with
+        | Admin _ -> true
+        | _ -> false
+    Navbar.link_a [ if isActive then
+                        yield Navbar.Link.isActive
+                    yield Navbar.Link.props [ Href (toHash (Admin AdminPage.Index)) ] ]
+        [ str "Admin" ]
+
+let navbar currentPage =
+    Navbar.navbar [ ]
+        [ Navbar.brand_a [ ]
+            [ ]
+          Navbar.item_a [
+              if currentPage = Home then
+                yield Navbar.Item.isActive
+              yield Navbar.Item.props [ Href (toHash Home) ]
+           ]
+            [ str "Home" ]
+          Navbar.menu [ ]
+            [ Navbar.start_div [ ]
+                [ Navbar.item_div [ Navbar.Item.hasDropdown
+                                    Navbar.Item.isHoverable ]
+                    [ navbarAdminLink currentPage
+                      Navbar.dropdown_div [ ]
+                        [ genNavbarItem "Users" (Admin (AdminPage.User AdminUserPage.Index)) currentPage ] ] ] ] ]
+
 
 let root (model: Model) dispatch =
 
-    let pageHtml =
-        function
-        | Page.About -> Info.View.root
-        | Counter -> Counter.View.root model.Counter (CounterMsg >> dispatch)
-        | CounterList -> CounterList.View.root model.CounterList (CounterListMsg >> dispatch)
-        | Home -> Home.View.root model.Home (HomeMsg >> dispatch)
+    // let pageHtml =
+    //     function
+    //     | Page.About -> Info.View.root
+    //     | Counter -> Counter.View.root model.Counter (CounterMsg >> dispatch)
+    //     | CounterList -> CounterList.View.root model.CounterList (CounterListMsg >> dispatch)
+    //     | Home -> Home.View.root model.Home (HomeMsg >> dispatch)
 
     div
-        []
-        [ div
-            [ ClassName "navbar-bg" ]
-            [ div
-                [ ClassName "container" ]
-                [ Navbar.View.root ] ]
-          div
-            [ ClassName "section" ]
-            [ div
-                [ ClassName "container" ]
-                [ div
-                    [ ClassName "columns" ]
-                    [ div
-                        [ ClassName "column is-3" ]
-                        [ menu model.CurrentPage ]
-                      div
-                        [ ClassName "column" ]
-                        [ pageHtml model.CurrentPage ] ] ] ] ]
+        [ ClassName "container" ]
+        [ navbar model.CurrentPage
+
+        ]
 
 open Elmish.React
 open Elmish.Debug

@@ -1,18 +1,6 @@
 module App.Types
 
-type Page =
-    | Home
-    | Counter
-    | CounterList
-    | About
-
-let toHash page =
-    match page with
-    | About -> "#about"
-    | Counter _ -> "#counter"
-    | CounterList _ -> "#counterlist"
-    | Home _ -> "#home"
-
+open Global
 
 type Msg =
     | CounterMsg of Counter.Types.Msg

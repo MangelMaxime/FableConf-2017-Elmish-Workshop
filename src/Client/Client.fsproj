@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Global.fs" />
     <!-- Info -->
     <Compile Include="Info/View.fs" />
     <!-- Counter -->
@@ -18,8 +19,6 @@
     <Compile Include="Home/Types.fs" />
     <Compile Include="Home/State.fs" />
     <Compile Include="Home/View.fs" />
-    <!-- Navbar -->
-    <Compile Include="Navbar/View.fs" />
     <!-- App -->
     <Compile Include="Types.fs" />
     <Compile Include="State.fs" />

@@ -5,15 +5,16 @@ open Elmish.Browser.Navigation
 open Elmish.Browser.UrlParser
 open Fable.Import.Browser
 open Types
+open Global
 
 let pageParser: Parser<Page->Page,Page> =
     oneOf [
-      map About (s "about")
-      map Counter (s "counter")
-      map CounterList (s "counterlist")
       map Home (s "home")
+      map (Admin Index) (s "admin")
+      map (Admin (User AdminUserPage.Index)) (s "admin" </> s "user")
+      map (Admin (User AdminUserPage.Create)) (s "admin" </> s "user" </> s "create")
+      map (AdminUserPage.Edit >> AdminPage.User >> Admin) (s "admin" </> s "user" </> i32 </> s "edit")
     ]
-
 
 let urlUpdate (result: Option<Page>) model =
     match result with
