@@ -5,20 +5,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Global.fs" />
-    <!-- Info -->
-    <Compile Include="Info/View.fs" />
-    <!-- Counter -->
-    <Compile Include="Counter/Types.fs" />
-    <Compile Include="Counter/State.fs" />
-    <Compile Include="Counter/View.fs" />
-    <!-- CounterList -->
-    <Compile Include="CounterList/Types.fs" />
-    <Compile Include="CounterList/State.fs" />
-    <Compile Include="CounterList/View.fs" />
     <!-- Home -->
     <Compile Include="Home/Types.fs" />
     <Compile Include="Home/State.fs" />
     <Compile Include="Home/View.fs" />
+    <!-- Admin -->
+    <Compile Include="Admin/Index/Types.fs" />
+    <Compile Include="Admin/Index/State.fs" />
+    <Compile Include="Admin/Index/View.fs" />
+    <Compile Include="Admin/Dispatcher/Types.fs" />
+    <Compile Include="Admin/Dispatcher/State.fs" />
+    <Compile Include="Admin/Dispatcher/View.fs" />
     <!-- App -->
     <Compile Include="Types.fs" />
     <Compile Include="State.fs" />

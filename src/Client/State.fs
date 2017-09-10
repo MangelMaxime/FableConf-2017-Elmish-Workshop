@@ -28,19 +28,15 @@ let urlUpdate (result: Option<Page>) model =
 let init result =
     urlUpdate result
         { CurrentPage = Home
-          Counter = Counter.State.init()
-          CounterList = CounterList.State.init()
+          AdminModel = Admin.Dispatcher.State.init()
           Home = Home.State.init() }
-
 
 let update msg (model:Model) =
     match msg with
-    | CounterMsg msg ->
-        let counter = Counter.State.update msg model.Counter
-        { model with Counter = counter }, Cmd.none
-    | CounterListMsg msg ->
-        let counterList = CounterList.State.update msg model.CounterList
-        { model with CounterList = counterList }, Cmd.none
+    | AdminMsg msg ->
+        let (admin, adminMsg) = Admin.Dispatcher.State.update msg model.AdminModel
+        { model with AdminModel = admin}, Cmd.none
+
     | HomeMsg msg ->
         let home = Home.State.update msg model.Home
         { model with Home =  home }, Cmd.none

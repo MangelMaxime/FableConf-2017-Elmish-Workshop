@@ -7,9 +7,10 @@ open Fable.Core
 open Fable.Core.JsInterop
 open Fable.Import
 open Types
-open State
+open App.State
 open Fulma.Layout
 open Fulma.Components
+open Fulma.Elements
 open Global
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
@@ -33,9 +34,10 @@ let navbarAdminLink currentPage =
         [ str "Admin" ]
 
 let navbar currentPage =
-    Navbar.navbar [ ]
-        [ Navbar.brand_a [ ]
-            [ ]
+    Navbar.navbar [ Navbar.props [ Data("test", "maxime") ] ]
+        [ Navbar.brand_a [ Fulma.Common.GenericOption.Props [ Href (toHash Home)] ]
+            [ img [ Src "/img/logo.svg"
+                    Style [ Height "60px" ] ] ]
           Navbar.item_a [
               if currentPage = Home then
                 yield Navbar.Item.isActive
@@ -60,10 +62,16 @@ let root (model: Model) dispatch =
     //     | CounterList -> CounterList.View.root model.CounterList (CounterListMsg >> dispatch)
     //     | Home -> Home.View.root model.Home (HomeMsg >> dispatch)
 
+    let pageHtml =
+        function
+        | Home -> Home.View.root model.Home (HomeMsg >> dispatch)
+
     div
         [ ClassName "container" ]
         [ navbar model.CurrentPage
-
+          section [ ClassName "section" ]
+            [ ]
+          pageHtml model.CurrentPage
         ]
 
 open Elmish.React
